@@ -12,7 +12,7 @@ const GuestLayout = ({ children }) => {
       <VStack spacing="8" w="full" maxW={{ base: "md", lg: "lg" }}>
         <Box textAlign="center">
           <Heading size="lg" fontWeight="extrabold">
-            App Name
+            DIRBATO
           </Heading>
         </Box>
         {children}

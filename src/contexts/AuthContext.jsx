@@ -1,6 +1,8 @@
 import React, { createContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { SessionStore } from '../utils/storage';
+import { toastPosition, toastStatus } from '../utils/commonData';
+import ToastController from '../utils/toastController';
 
 export const AuthContext = createContext();
 export const AccountAdmin = {
@@ -15,7 +17,7 @@ const AuthContextProvider = ({ children }) => {
   const [userRole, setUserRole] = useState('User');
   const [wait, setWait] = useState(true);
   const navigate = useNavigate();
-  // Save user info to session storage, check if user is authenticated
+  // Save user info to session storage, check if user is authentcated
   useEffect(() => {
     if (isExits('ACCOUNT_ACCESS')) {
       const user = get('ACCOUNT_ACCESS');
@@ -33,8 +35,9 @@ const AuthContextProvider = ({ children }) => {
       setUserRole('Admin');
       set('ACCOUNT_ACCESS', { isAuthenticated: true, userRole: 'Admin' });
       navigate('/admin');
+      ToastController('Successfully', toastStatus.success, toastPosition.topRight);
     } else {
-      alert('Account or password is incorrect');
+      ToastController('Account or password is incorrect', toastStatus.error, toastPosition.topRight);
     }
   };
 
