@@ -1,25 +1,43 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { Suspense, useContext } from 'react';
+import { Navigate, Route, Routes } from 'react-router-dom';
+import AuthContextProvider, { AuthContext } from './contexts/AuthContext';
+import { ThemeProviderCharka } from './contexts/ThemeContext';
+import GuestLayout from './layouts/layoutGuest';
+import AppRoutes from './routes/App/AppRoutes';
+import guestPages from './routes/Guest/guestPage';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+
+const { ForgetPassword, SignIn } = guestPages;
+
+const App = () => {
+  const { isAuthenticated, userRole } = useContext(AuthContext);
+  return isAuthenticated ? (
+    <Routes>
+      <Route path="*" element={<AppRoutes userRole={userRole} />} />
+    </Routes>
+  ) : (
+    <GuestLayout>
+        <Suspense fallback={<div>Loading...</div>}>
+      <Routes>
+        <Route path="/signin" element={<SignIn />} />
+        <Route path="/forget-password" element={<ForgetPassword />} />
+        <Route path="*" element={<Navigate to="/signin" />} />
+      </Routes>
+        </Suspense>
+    </GuestLayout>
   );
 }
 
-export default App;
+
+const AppWithContext = () => {
+  return (
+    <ThemeProviderCharka>
+      <AuthContextProvider>
+        <App />
+      </AuthContextProvider>
+    </ThemeProviderCharka>
+
+  );
+};
+
+export default AppWithContext;
